@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="ToSound.Pages.MindToSoundPage"
+    Title="MindToSound"
+    BackgroundColor="{StaticResource Background}">
+    <AbsoluteLayout>
+        <!-- Title Bar -->
+        <Border
+            AbsoluteLayout.LayoutBounds="0.5, 0.025, 0.15, 50"
+            AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+            BackgroundColor="{StaticResource Primary}"
+            StrokeShape="RoundRectangle 12"
+            Stroke="{StaticResource Primary}"
+        >
+            <Label
+                Text="MindToSound"
+                TextColor="{StaticResource Background}"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Shadow="{StaticResource MediumShadow}"
+            />
+
+            <Border.Shadow>
+                <StaticResource Key="LightShadow" />
+            </Border.Shadow>
+        </Border>
+
+        <!-- Main Section -->
+        <Border
+            AbsoluteLayout.LayoutBounds="0.5, 0.47, 0.975, 590"
+            AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+            BackgroundColor="{StaticResource Gray200}"
+            StrokeShape="RoundRectangle 12"
+            Stroke="{StaticResource Gray200}"
+        >
+
+            <AbsoluteLayout>
+                <!-- Panel Labels -->
+                <Label
+                    Text="Save Options"
+                    AbsoluteLayout.LayoutBounds="-0.06, 0, 0.66, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <Label
+                    Text="Headset"
+                    AbsoluteLayout.LayoutBounds="0.98, 0, 0.33, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <Label
+                    Text="Wave Frequencies"
+                    AbsoluteLayout.LayoutBounds="-0.06, 0.315, 0.66, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <Label
+                    Text="Sensor Selection"
+                    AbsoluteLayout.LayoutBounds="-0.06, 0.47, 0.66, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <Label
+                    Text="OSC Settings"
+                    AbsoluteLayout.LayoutBounds="-0.06, 0.71, 0.66, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <Label
+                    Text="Transmission Info"
+                    AbsoluteLayout.LayoutBounds="0.98, 0.39, 0.33, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <Label
+                    Text="Recording Info"
+                    AbsoluteLayout.LayoutBounds="0.98, 0.62, 0.33, 50"
+                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                    TextColor="{StaticResource PrimaryDark}"
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Padding="0,10"
+                />
+
+                <!-- Save Options Panel -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds="0.025, 0.75, 0.62, 0.9"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                >
+                    <VerticalStackLayout
+                        Spacing="5"
+                        Padding="10"
+                    >
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Start"
+                            Padding="10,0,0,0"
+                        >
+                            <Label
+                                Text="Volunteer's Name:"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="0,0,10,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Entry 
+                                x:Name="VolunteerName"
+                                Placeholder="Name Here..."
+                                Keyboard="Plain"
+                                MaxLength="30"
+                                BackgroundColor="{StaticResource Background}"
+                                TextColor="{StaticResource Black}"
+                                WidthRequest="230"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                            <Label
+                                Text="Session ID:"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="70,0,10,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Entry 
+                                x:Name="SessionIdentifier"
+                                Placeholder="Session ID..."
+                                Keyboard="Default"
+                                MaxLength="10"
+                                BackgroundColor="{StaticResource Background}"
+                                TextColor="{StaticResource Black}"
+                                WidthRequest="230"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Start"
+                            Padding="10,10,0,0"
+                            Margin="0,0,0,5"
+                        >
+                            <Label
+                                Text="Save Location:"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="0,0,10,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Button 
+                                x:Name="SelectLocationButton"
+                                Text="Select Location"
+                                Shadow="{StaticResource LightShadow}"
+                                Clicked="OnSelectLocationClicked"
+                            />
+
+                            <Label
+                                Text="Output Path:"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="20,0,5,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="SaveLocationPath"
+                                Text="Fill:with/default/path/here/on/startup/max/50"
+                                TextColor="{StaticResource Background}"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Padding="0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- Wave Frequencies Panel -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds="0.025, 0.745, 0.62, 0.513"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="0" 
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label 
+                                Text="Theta" 
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox 
+                                x:Name="ThetaCheckBox" 
+                                IsChecked="False"
+                                CheckedChanged="OnThetaClicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="1" 
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label 
+                                Text="Alpha" 
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox 
+                                x:Name="AlphaCheckBox" 
+                                IsChecked="False"
+                                CheckedChanged="OnAlphaClicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="2" 
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label 
+                                Text="Beta Low" 
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="BetaLCheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnBetaLClicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="3" 
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label 
+                                Text="Beta High" 
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="BetaHCheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnBetaHClicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="4" 
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="Gamma"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="GammaCheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnGammaClicked"
+                            />
+                        </HorizontalStackLayout>
+                    </Grid>
+
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- Sensor Select Panel -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds="0.025, 1.03, 0.62, 0.513"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="0"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label 
+                                Text="AF3" 
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="AF3CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnAF3Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="1"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="F7"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="F7CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnF7Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="2"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="F3"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="F3CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnF3Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="3"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="FC5"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="FC5CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnFC5Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="4"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="T7"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="T7CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnT7Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="5"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="P7"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="P7CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnP7Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="6"
+                            Grid.Row="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="O1"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="O1CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnO1Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="AF4"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="AF4CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnAF4Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="1"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="F8"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="F8CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnF8Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="2"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="F4"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="F4CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnF4Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="3"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="FC6"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="FC6CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnFC6Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="4"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label 
+                                Text="T8" 
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="T8CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnT8Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="5"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="P8"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="P8CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnP8Clicked"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout 
+                            Grid.Column="6"
+                            Grid.Row="1"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                        >
+                            <Label
+                                Text="O2"
+                                VerticalOptions="Center"
+                                FontAttributes="Bold"
+                            />
+                            <CheckBox
+                                x:Name="O2CheckBox"
+                                IsChecked="False"
+                                CheckedChanged="OnO2Clicked"
+                            />
+                        </HorizontalStackLayout>
+                    </Grid>
+
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- OSC Options Panel -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds="0.025, 1.485, 0.62, 0.513"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                    Padding="10,10,10,-10"
+                >
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Margin="0,0,0,22"
+                    >
+                        <Label
+                            Text="IP Address:"
+                            TextColor="{StaticResource Background}"
+                            FontSize="Small"
+                            FontAttributes="Bold"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Margin="0,0,10,0"
+                            Shadow="{StaticResource LightShadow}"
+                        />
+
+                        <Entry 
+                            x:Name="OSCIpAddress"
+                            Placeholder="127.0.0.1"
+                            Keyboard="Plain"
+                            MaxLength="12"
+                            BackgroundColor="{StaticResource Background}"
+                            TextColor="{StaticResource Black}"
+                            WidthRequest="108"
+                            HeightRequest="44"
+                            Shadow="{StaticResource LightShadow}"
+                        />
+
+                        <Label
+                            Text="Port Number:"
+                            TextColor="{StaticResource Background}"
+                            FontSize="Small"
+                            FontAttributes="Bold"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Margin="175,0,10,0"
+                            Shadow="{StaticResource LightShadow}"
+                        />
+
+                        <Entry 
+                            x:Name="OSCPortNum"
+                            Placeholder="55555"
+                            Keyboard="Plain"
+                            MaxLength="5"
+                            BackgroundColor="{StaticResource Background}"
+                            TextColor="{StaticResource Black}"
+                            WidthRequest="64"
+                            HeightRequest="44"
+                            Shadow="{StaticResource LightShadow}"
+                        />
+                    </HorizontalStackLayout>
+
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- Headset Panel -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds=".985, 0.75, 0.35, 0.9"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                >
+                    <VerticalStackLayout
+                        Spacing="10"
+                        Padding="10"
+                    >
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Padding="10"
+                        >
+                            <Label
+                                Text="Desired Headset: "
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Padding="0,0,10,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Entry 
+                                x:Name="HeadsetId"
+                                Placeholder="EPOCX-XXXXXXXX"
+                                MaxLength="14"
+                                BackgroundColor="{StaticResource Background}"
+                                TextColor="{StaticResource Black}"
+                                WidthRequest="136"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                        >
+                            <Label
+                                Text="Connection Status: "
+                                TextColor="{StaticResource Background}"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Padding="0,0,5,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="HeadsetConnectionStatus"
+                                Text="Status"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Padding="0,0,10,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                        </HorizontalStackLayout>
+
+                        <Button
+                            x:Name="HeadsetConnectButton"
+                            Text="Connect"
+                            Shadow="{StaticResource LightShadow}"
+                            Clicked="OnHeadsetClicked"
+                        />
+
+                    </VerticalStackLayout>
+
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- Transmission Info -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds=".985, .9455, 0.35, 0.545"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                >
+                    <VerticalStackLayout
+                        Padding="10"
+                        Spacing="10">
+                        <HorizontalStackLayout>
+                            <Label
+                                Text="Elapsed Time:"
+                                TextColor="{StaticResource Tertiary}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="ElapsedTransmissionTime"
+                                Text="00:00:00"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Padding="10,0,0,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout>
+                            <Label
+                                Text="Total Samplings:"
+                                TextColor="{StaticResource Tertiary}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="TotalSamplingsTransmitted"
+                                Text="00000"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Padding="10,0,0,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                    
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- Recording Info -->
+                <Border 
+                    AbsoluteLayout.LayoutBounds=".985, 1.4, 0.35, 0.545"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="{StaticResource Secondary}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Secondary}"
+                    VerticalOptions="Start"
+                >
+                    <VerticalStackLayout
+                        Padding="10"
+                        Spacing="10"
+                    >
+
+                        <HorizontalStackLayout>
+                            <Label
+                                Text="Elapsed Time:"
+                                TextColor="{StaticResource Tertiary}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="ElapsedRecordTime"
+                                Text="00:00:00"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Padding="10,0,0,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+                        
+                        <HorizontalStackLayout>
+                            <Label
+                                Text="Samplings Saved:"
+                                TextColor="{StaticResource Tertiary}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="TotalSamplingsSaved"
+                                Text="00000"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Padding="10,0,0,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout>
+                            <Label
+                                Text="Recordings Saved:"
+                                TextColor="{StaticResource Tertiary}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Label
+                                x:Name="RecordingsSaved"
+                                Text="00000"
+                                TextColor="{StaticResource Background}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                HorizontalOptions="Start"
+                                Padding="10,0,0,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+
+                    <Border.Shadow>
+                        <StaticResource Key="LightShadow" />
+                    </Border.Shadow>
+                </Border>
+
+                <!-- Transmission and Record Buttons -->
+                <HorizontalStackLayout
+                    AbsoluteLayout.LayoutBounds=".985, 0.9775, 0.565, 0.125"
+                    AbsoluteLayout.LayoutFlags="All"
+                    Spacing="13"
+                    Padding="10"
+                >
+                    <Button
+                        x:Name="TransmissionButton"
+                        Text="Send"
+                        BackgroundColor="{StaticResource Good}"
+                        Padding="20,0"
+                        Shadow="{StaticResource LightShadow}"
+                        IsEnabled="False"
+                        Clicked="OnTransmissionClicked"
+                    />
+
+                    <Button 
+                        x:Name="RecordButton"
+                        Text="Record"
+                        BackgroundColor="{StaticResource Good}"
+                        Shadow="{StaticResource LightShadow}"
+                        IsEnabled="False"
+                        Clicked="OnRecordClicked"
+                    />
+                </HorizontalStackLayout>
+            </AbsoluteLayout>
+        </Border>
+    </AbsoluteLayout>
+</ContentPage>

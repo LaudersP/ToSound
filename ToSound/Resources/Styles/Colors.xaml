@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Color x:Key="Primary">#0066ff</Color>
+    <Color x:Key="PrimaryDark">#00265f</Color>
+    <Color x:Key="PrimaryDarkText">#ffffff</Color>
+    <Color x:Key="Secondary">#3385ff</Color>
+    <Color x:Key="SecondaryDarkText">#f5f5f5</Color>
+    <Color x:Key="Tertiary">#00265f</Color>
+    <Color x:Key="Accent">#ffffff</Color>
+    <Color x:Key="Background">#f5f5f5</Color>
+
+    <Color x:Key="White">White</Color>
+    <Color x:Key="Black">Black</Color>
+    <Color x:Key="Magenta">#ff0066</Color>
+    <Color x:Key="MidnightBlue">#00265f</Color>
+    <Color x:Key="OffBlack">#1f1f1f</Color>
+
+    <Color x:Key="Gray100">#f5f5f5</Color>
+    <Color x:Key="Gray200">#cccccc</Color>
+    <Color x:Key="Gray300">#acacac</Color>
+    <Color x:Key="Gray400">#919191</Color>
+    <Color x:Key="Gray500">#6e6e6e</Color>
+    <Color x:Key="Gray600">#404040</Color>
+    <Color x:Key="Gray900">#212121</Color>
+    <Color x:Key="Gray950">#141414</Color>
+
+    <Color x:Key="Good">#00AB66</Color>
+    <Color x:Key="Bad">#CF142B</Color>
+
+    <Shadow x:Key="LightShadow"
+            Brush="{StaticResource Black}"
+            Opacity="0.2"
+            Radius="8"
+            Offset="0,4"
+    />
+
+    <Shadow x:Key="MediumShadow"
+            Brush="{StaticResource Black}"
+            Opacity="0.4"
+            Radius="8"
+            Offset="0,4" 
+    />
+
+    <Shadow x:Key="HeavyShadow"
+            Brush="{StaticResource Black}"
+            Opacity="1"
+            Radius="16"
+            Offset="0,8" 
+    />
+</ResourceDictionary>

@@ -1,8 +1,8 @@
 ﻿namespace ToSound
 {
-    public partial class AppShell : Shell
+    public partial class MainPage : TabbedPage
     {
-        public AppShell()
+        public MainPage()
         {
             InitializeComponent();
         }
