@@ -136,7 +136,7 @@
                             Padding="10,0,0,0"
                         >
                             <Label
-                                Text="Volunteers Name:"
+                                Text="Volunteer's Name:"
                                 TextColor="{StaticResource Background}"
                                 FontSize="Small"
                                 FontAttributes="Bold"
@@ -147,7 +147,7 @@
                             />
 
                             <Entry 
-                                ClassId="VolunteerName"
+                                x:Name="VolunteerName"
                                 Placeholder="Name Here..."
                                 Keyboard="Plain"
                                 MaxLength="30"
@@ -168,7 +168,7 @@
                             />
 
                             <Entry 
-                                ClassId="SessionIdentifier"
+                                x:Name="SessionIdentifier"
                                 Placeholder="Session ID..."
                                 Keyboard="Default"
                                 MaxLength="10"
@@ -197,6 +197,7 @@
                             />
 
                             <Button 
+                                x:Name="SelectLocationButton"
                                 Text="Select Location"
                                 Shadow="{StaticResource LightShadow}"
                                 Clicked="OnSelectLocationClicked"
@@ -214,10 +215,11 @@
                             />
 
                             <Label
+                                x:Name="SaveLocationPath"
                                 Text="Fill:with/default/path/here/on/startup/max/50"
                                 TextColor="{StaticResource Background}"
                                 FontSize="14"
-                                FontAttributes="Bold,Italic"
+                                FontAttributes="Bold"
                                 VerticalOptions="Center"
                                 HorizontalOptions="Center"
                                 Padding="0"
@@ -659,7 +661,7 @@
                         />
 
                         <Entry 
-                            ClassId="OSCIpAddress"
+                            x:Name="OSCIpAddress"
                             Placeholder="127.0.0.1"
                             Keyboard="Plain"
                             MaxLength="12"
@@ -682,7 +684,7 @@
                         />
 
                         <Entry 
-                            ClassId="OSCPortNum"
+                            x:Name="OSCPortNum"
                             Placeholder="55555"
                             Keyboard="Plain"
                             MaxLength="5"
@@ -729,7 +731,7 @@
                             />
 
                             <Entry 
-                                ClassId="HeadsetId"
+                                x:Name="HeadsetId"
                                 Placeholder="EPOCX-XXXXXXXX"
                                 MaxLength="14"
                                 BackgroundColor="{StaticResource Background}"
@@ -755,9 +757,8 @@
                             />
 
                             <Label
-                                ClassId="HeadsetConnectionStatus"
-                                Text="Disconnected"
-                                TextColor="{StaticResource Bad}"
+                                x:Name="HeadsetConnectionStatus"
+                                Text="Status"
                                 FontSize="14"
                                 FontAttributes="Bold"
                                 VerticalOptions="Center"
@@ -769,6 +770,7 @@
                         </HorizontalStackLayout>
 
                         <Button
+                            x:Name="HeadsetConnectButton"
                             Text="Connect"
                             Shadow="{StaticResource LightShadow}"
                             Clicked="OnHeadsetClicked"
@@ -804,8 +806,8 @@
                             />
 
                             <Label
-                                ClassId="ElapsedTransmissionTime"
-                                Text="HH:MM:SS"
+                                x:Name="ElapsedTransmissionTime"
+                                Text="00:00:00"
                                 TextColor="{StaticResource Background}"
                                 FontSize="Small"
                                 FontAttributes="Bold"
@@ -826,7 +828,7 @@
                             />
 
                             <Label
-                                ClassId="TotalSamplings"
+                                x:Name="TotalSamplingsTransmitted"
                                 Text="00000"
                                 TextColor="{StaticResource Background}"
                                 FontSize="Small"
@@ -868,8 +870,8 @@
                             />
 
                             <Label
-                                ClassId="ElapsedRecordTime"
-                                Text="HH:MM:SS"
+                                x:Name="ElapsedRecordTime"
+                                Text="00:00:00"
                                 TextColor="{StaticResource Background}"
                                 FontSize="Small"
                                 FontAttributes="Bold"
@@ -890,7 +892,7 @@
                             />
 
                             <Label
-                                ClassId="SamplingsSaved"
+                                x:Name="TotalSamplingsSaved"
                                 Text="00000"
                                 TextColor="{StaticResource Background}"
                                 FontSize="Small"
@@ -912,7 +914,7 @@
                             />
 
                             <Label
-                                ClassId="RecordingsSaved"
+                                x:Name="RecordingsSaved"
                                 Text="00000"
                                 TextColor="{StaticResource Background}"
                                 FontSize="Small"
@@ -937,17 +939,21 @@
                     Padding="10"
                 >
                     <Button
+                        x:Name="TransmissionButton"
                         Text="Send"
                         BackgroundColor="{StaticResource Good}"
                         Padding="20,0"
                         Shadow="{StaticResource LightShadow}"
+                        IsEnabled="False"
                         Clicked="OnTransmissionClicked"
                     />
 
                     <Button 
+                        x:Name="RecordButton"
                         Text="Record"
                         BackgroundColor="{StaticResource Good}"
                         Shadow="{StaticResource LightShadow}"
+                        IsEnabled="False"
                         Clicked="OnRecordClicked"
                     />
                 </HorizontalStackLayout>
