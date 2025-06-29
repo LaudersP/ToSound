@@ -650,7 +650,7 @@ namespace ToSound.Pages
                 // Check if we have a session Id
                 if (_sessionID is not null)
                 {
-                    filename += _sessionID.ToString() + ' ';
+                    filename += '{' + _sessionID.ToString() + "} ";
                 }
 
                 // Add remaining filename items
