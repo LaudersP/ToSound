@@ -63,4 +63,10 @@
 	  <ProjectReference Include="..\CortexAccess\CortexAccess.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="Pages\CSVToSoundPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
