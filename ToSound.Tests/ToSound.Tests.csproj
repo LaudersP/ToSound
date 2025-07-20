@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MindToSoundEmulatorTests.cs~RF103b375.TMP" />
+    <None Remove="MindToSoundEmulatorTests.cs~RFefd527.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ToSound.Core\ToSound.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="TestData\All States {1} [03-31-2025] %281%29.csv" />
+		<EmbeddedResource Include="TestData\Regular Recording {1} [05-25-2025 1608] (1).csv" />
+		<EmbeddedResource Include="TestData\Select States {1} [03-31-2025] %282%29.csv" />
+		<EmbeddedResource Include="TestData\Small Delay {1} [05-25-2025 1608] (1).csv" />
+		<EmbeddedResource Include="TestData\Too Short {1} [05-25-2025 1630] (1).csv" />
+	</ItemGroup>
+	
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+</Project>
