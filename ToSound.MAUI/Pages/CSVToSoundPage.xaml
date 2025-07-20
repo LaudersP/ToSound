@@ -120,7 +120,7 @@
                                     x:Name="SelectFileButton"
                                     Text="Select File"
                                     Shadow="{StaticResource LightShadow}"
-                                    Clicked="SelectFileButtonClicked"
+                                    Clicked="OnSelectFileButtonClicked"
                                 />
 
                                 <Label 
@@ -344,106 +344,6 @@
                         </Border.Shadow>
                     </Border>
 
-                    <!-- Playback States -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <HorizontalStackLayout
-                            Grid.Column="0"
-                            VerticalOptions="Center"
-                            HorizontalOptions="Start"
-                            Padding="15,0,0,0"
-                        >
-                            <Label
-                                Text="Loop Playback:"
-                                TextColor="{StaticResource PrimaryDark}"
-                                FontSize="Small"
-                                FontAttributes="Bold"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                Margin="0,0,10,0"
-                                Shadow="{StaticResource LightShadow}"
-                            />
-
-                            <Switch
-                                x:Name="LoopPlaybackToggle"
-                                IsToggled="True"
-                            />
-                        </HorizontalStackLayout>
-
-                        <Label
-                            Grid.Column="1"
-                            Text="Playback States"
-                            TextColor="{StaticResource PrimaryDark}"
-                            FontAttributes="Bold"
-                            HorizontalTextAlignment="Center"
-                            FontSize="18"
-                            Margin="0,6,0,8"
-                        />
-                    </Grid>
-
-                    <Border
-                        BackgroundColor="{StaticResource Secondary}"
-                        StrokeShape="RoundRectangle 12"
-                        Stroke="{StaticResource Secondary}"
-                        Margin="13,0,8,0"
-                    >
-                        <VerticalStackLayout
-                            Spacing="5"
-                            Padding="10"
-                        >
-                            <HorizontalStackLayout
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                Spacing="25"
-                            >
-                                <Button 
-                                    x:Name="BaselineBtn"
-                                    Text="Baseline"
-                                    Shadow="{StaticResource LightShadow}"
-                                    Clicked="OnBaselineBtnClicked"
-                                    IsEnabled="False"
-                                />
-
-                                <Button 
-                                    x:Name="TransitionToThBtn"
-                                    Text="Transition To TH"
-                                    Shadow="{StaticResource LightShadow}"
-                                    Clicked="OnTransitionToThBtnClicked"
-                                    IsEnabled="False"
-                                />
-
-                                <Button 
-                                    x:Name="TransientHypofrontalityBtn"
-                                    Text="Transient Hypofrontality"
-                                    Shadow="{StaticResource LightShadow}"
-                                    Clicked="OnTransientHypofrontalityBtnClicked"
-                                    IsEnabled="False"
-                                />
-
-                                <Button 
-                                    x:Name="TransitionToFlowBtn"
-                                    Text="Transition To Flow"
-                                    Shadow="{StaticResource LightShadow}"
-                                    Clicked="OnTransitionToFlowBtnClicked"
-                                    IsEnabled="False"
-                                />
-
-                                <Button 
-                                    x:Name="FlowBtn"
-                                    Text="Flow"
-                                    Shadow="{StaticResource LightShadow}"
-                                    Clicked="OnFlowBtnClicked"
-                                    IsEnabled="False"
-                                />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Border>
-                    
                     <!-- Wave Frequencies Panel -->
                     <Label
                         Text="Wave Frequencies"
@@ -858,6 +758,106 @@
                             <StaticResource Key="LightShadow" />
                         </Border.Shadow>
                     </Border>
+
+                    <!-- Playback States -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <HorizontalStackLayout
+                            Grid.Column="0"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Start"
+                            Padding="15,0,0,0"
+                        >
+                            <Label
+                                Text="Loop Playback:"
+                                TextColor="{StaticResource PrimaryDark}"
+                                FontSize="Small"
+                                FontAttributes="Bold"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Margin="0,0,10,0"
+                                Shadow="{StaticResource LightShadow}"
+                            />
+
+                            <Switch
+                                x:Name="LoopPlaybackToggle"
+                                IsToggled="True"
+                            />
+                        </HorizontalStackLayout>
+
+                        <Label
+                            Grid.Column="1"
+                            Text="Playback States"
+                            TextColor="{StaticResource PrimaryDark}"
+                            FontAttributes="Bold"
+                            HorizontalTextAlignment="Center"
+                            FontSize="18"
+                            Margin="0,6,0,8"
+                        />
+                    </Grid>
+
+                    <Border
+                        BackgroundColor="{StaticResource Secondary}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Secondary}"
+                        Margin="13,0,8,0"
+                    >
+                        <VerticalStackLayout
+                            Spacing="5"
+                            Padding="10"
+                        >
+                            <HorizontalStackLayout
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                Spacing="25"
+                            >
+                                <Button 
+                                    x:Name="BaselineBtn"
+                                    Text="Baseline"
+                                    Shadow="{StaticResource LightShadow}"
+                                    Clicked="OnBaselineBtnClicked"
+                                    IsEnabled="False"
+                                />
+
+                                <Button 
+                                    x:Name="TransitionToThBtn"
+                                    Text="Transition To TH"
+                                    Shadow="{StaticResource LightShadow}"
+                                    Clicked="OnTransitionToThBtnClicked"
+                                    IsEnabled="False"
+                                />
+
+                                <Button 
+                                    x:Name="TransientHypofrontalityBtn"
+                                    Text="Transient Hypofrontality"
+                                    Shadow="{StaticResource LightShadow}"
+                                    Clicked="OnTransientHypofrontalityBtnClicked"
+                                    IsEnabled="False"
+                                />
+
+                                <Button 
+                                    x:Name="TransitionToFlowBtn"
+                                    Text="Transition To Flow"
+                                    Shadow="{StaticResource LightShadow}"
+                                    Clicked="OnTransitionToFlowBtnClicked"
+                                    IsEnabled="False"
+                                />
+
+                                <Button 
+                                    x:Name="FlowBtn"
+                                    Text="Flow"
+                                    Shadow="{StaticResource LightShadow}"
+                                    Clicked="OnFlowBtnClicked"
+                                    IsEnabled="False"
+                                />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
                 </VerticalStackLayout>
 
 
@@ -866,93 +866,6 @@
                     Grid.Column="1"
                     Grid.Row="0"
                 >
-                    <!-- Headset -->
-                    <Label
-                        Text="Headset"
-                        TextColor="{StaticResource PrimaryDark}"
-                        FontAttributes="Bold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Margin="0,10,0,8"
-                    />
-
-                    <Border
-                        BackgroundColor="{StaticResource Secondary}"
-                        StrokeShape="RoundRectangle 12"
-                        Stroke="{StaticResource Secondary}"
-                        Margin="7,0,14,1"
-                    >
-                        <VerticalStackLayout
-                            Spacing="10"
-                            Padding="10"
-                        >
-                            <HorizontalStackLayout
-                                  VerticalOptions="Center"
-                                  HorizontalOptions="Center"
-                                  Padding="10"
-                            >
-                                <Label
-                                    Text="Desired Headset: "
-                                    TextColor="{StaticResource Background}"
-                                    FontSize="Small"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    Padding="0,0,10,0"
-                                    Shadow="{StaticResource LightShadow}"
-                                />
-
-                                <Entry
-                                    x:Name="HeadsetId"    
-                                    Placeholder="EPOCX-XXXXXXXX"
-                                    MaxLength="14"
-                                    BackgroundColor="{StaticResource Background}"
-                                    TextColor="{StaticResource Black}"
-                                    WidthRequest="136"
-                                    Shadow="{StaticResource LightShadow}"
-                                />
-                            </HorizontalStackLayout>
-
-                            <HorizontalStackLayout
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                            >
-                                <Label
-                                    Text="Connection Status: "
-                                    TextColor="{StaticResource Background}"
-                                    FontSize="12"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    Padding="0,0,5,0"
-                                    Shadow="{StaticResource LightShadow}"
-                                />
-
-                                <Label
-                                    x:Name="HeadsetConnectionStatus"
-                                    Text="Status"
-                                    FontSize="14"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    Padding="0,0,10,0"
-                                    Shadow="{StaticResource LightShadow}"
-                                />
-                            </HorizontalStackLayout>
-
-                            <Button 
-                                x:Name="HeadsetConnectButton"
-                                Text="Connect"
-                                Shadow="{StaticResource LightShadow}"
-                                Clicked="OnHeadsetClicked"
-                            />
-                        </VerticalStackLayout>
-
-                        <Border.Shadow>
-                            <StaticResource Key="LightShadow" />
-                        </Border.Shadow>
-                    </Border>
-
                     <!-- OSC Settings -->
                     <Label
                         Text="OSC Settings"
