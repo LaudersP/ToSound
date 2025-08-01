@@ -423,12 +423,11 @@ namespace ToSound.Pages
                 if (_statisticsUpdaterThread is not null)
                 {
                     _statisticsUpdaterThread.Join();
+                    _statisticsUpdaterThread = null;
                 }
 
                 // Reset the samplings transmitted variable
-                _statsVariableMutex.WaitOne();
                 _numSamplingsTransmitted = 0;
-                _statsVariableMutex.ReleaseMutex();
 
                 // Zero the OSC channels
                 ZeroOSCChannels();
@@ -650,7 +649,7 @@ namespace ToSound.Pages
                 // Check if we have a session Id
                 if (_sessionID is not null)
                 {
-                    filename += _sessionID.ToString() + ' ';
+                    filename += '{' + _sessionID.ToString() + "} ";
                 }
 
                 // Add remaining filename items
@@ -981,8 +980,8 @@ namespace ToSound.Pages
                 // Update the UI on the main thread
                 MainThread.BeginInvokeOnMainThread(() => 
                 {
-                    ElapsedTransmissionTime.Text = elapsedTime.ToString(@"hh\:mm\:ss");
                     _statsVariableMutex.WaitOne();
+                    ElapsedTransmissionTime.Text = elapsedTime.ToString(@"hh\:mm\:ss");
                     TotalSamplingsTransmitted.Text = _numSamplingsTransmitted.ToString();
                     _statsVariableMutex.ReleaseMutex();
                 });

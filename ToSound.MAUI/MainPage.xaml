@@ -6,5 +6,6 @@
             Title="ToSound">
 
     <pages:MindToSoundPage />
+    <pages:CSVToSoundPage />
 
 </TabbedPage>
