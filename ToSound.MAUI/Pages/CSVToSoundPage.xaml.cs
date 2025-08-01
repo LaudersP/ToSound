@@ -1,10 +1,9 @@
 using CortexAccess;
+using Microsoft.UI.Composition;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
-using Windows.Devices.Display.Core;
-using Windows.Media.AppBroadcasting;
-using Windows.Networking.NetworkOperators;
 using ToSound.Core;
 
 namespace ToSound.Pages;
@@ -14,8 +13,8 @@ public partial class CSVToSoundPage : ContentPage
     // Flags
     private bool _transmitTheta = false;
     private bool _transmitAlpha = false;
-    private bool _transmitBetaH = false;
     private bool _transmitBetaL = false;
+    private bool _transmitBetaH = false;
     private bool _transmitGamma = false;
     private bool _transmitAF3 = false;
     private bool _transmitF7 = false;
@@ -39,6 +38,19 @@ public partial class CSVToSoundPage : ContentPage
     private int _lengthOfFile = 0;
     private bool[] _availablePlaybackStates = [];
     private bool _statesEnabled = false;
+    private string _oscIP = "127.0.0.1";
+    private int _oscPort = 55555;
+    private MindToSoundEmulator.TransmissionStates _currentTransmissionState = MindToSoundEmulator.TransmissionStates.OFF;
+    private MindToSoundEmulator.PlaybackStates _currentPlaybackState = MindToSoundEmulator.PlaybackStates.ALL;
+    private readonly Mutex _transmissionLockout = new();
+    private Thread? _transmissionThread = null;
+    private CancellationTokenSource _transmissionCT = new();
+
+    // UI Variables
+    private Color _green = Color.FromArgb("#00AB66");
+    private Color _red = Color.FromArgb("#CF142B");
+    private DateTime _transmissionStartTime;
+
 
     public CSVToSoundPage()
     {
@@ -96,13 +108,13 @@ public partial class CSVToSoundPage : ContentPage
             TransmissionButton.IsEnabled = false;
 
             // Disable the wave frequency checkboxes
-            ToggleWaveCheckboxes();
+            WaveCheckboxesEnabled(false);
 
             // Disable the sensor checkboxes
-            ToggleSensorCheckboxes();
+            SensorCheckboxesEnabled(false);
 
             // Disable the playback state buttons
-            TogglePlaybackStates();
+            PlaybackStatesEnabled(false);
         }
 
         // Create the supported file options
@@ -208,61 +220,103 @@ public partial class CSVToSoundPage : ContentPage
         _availablePlaybackStates = _emulator.GetAvailablePlaybackStates();
 
         // Enable the playback state buttons
-        ToggleSelectPlaybackStates(_availablePlaybackStates);
+        SelectPlaybackStatesEnabled(_availablePlaybackStates, true);
 
         // Enable the wave frequency checkboxes
-        ToggleWaveCheckboxes();
+        WaveCheckboxesEnabled(true);
 
         // Enable the sensor checkboxes
-        ToggleSensorCheckboxes();
+        SensorCheckboxesEnabled(true);
     }
 
-    private void TogglePlaybackStates()
+    private void PlaybackStatesEnabled(bool isEnabled)
     {
         // Toggle all states based on the current state
-        ToggleSelectPlaybackStates([true, true, true, true, true]);
+        SelectPlaybackStatesEnabled([true, true, true, true, true], isEnabled);
     }
 
-    private void ToggleSelectPlaybackStates(bool[] selectedPlaybackStates)
+    private void SelectPlaybackStatesEnabled(bool[] selectedPlaybackStates, bool isEnabled)
     {
-        // Toggle the states enabled flag
-        _statesEnabled = !_statesEnabled;
-
         // Enable the loop switch
-        LoopPlaybackToggle.IsEnabled = _statesEnabled;
+        LoopPlaybackToggle.IsEnabled = isEnabled;
 
-        BaselineBtn.IsEnabled = selectedPlaybackStates[0] && _statesEnabled;
-        TransitionToThBtn.IsEnabled = selectedPlaybackStates[1] && _statesEnabled;
-        TransientHypofrontalityBtn.IsEnabled = selectedPlaybackStates[2] && _statesEnabled;
-        TransitionToFlowBtn.IsEnabled = selectedPlaybackStates[3] && _statesEnabled;
-        FlowBtn.IsEnabled = selectedPlaybackStates[4] && _statesEnabled;
+        BaselineBtn.IsEnabled = selectedPlaybackStates[0] && isEnabled;
+        TransitionToThBtn.IsEnabled = selectedPlaybackStates[1] && isEnabled;
+        TransientHypofrontalityBtn.IsEnabled = selectedPlaybackStates[2] && isEnabled;
+        TransitionToFlowBtn.IsEnabled = selectedPlaybackStates[3] && isEnabled;
+        FlowBtn.IsEnabled = selectedPlaybackStates[4] && isEnabled;
     }
 
-    private void ToggleWaveCheckboxes()
+    private void WaveCheckboxesEnabled(bool isEnabled)
     {
-        ThetaCheckBox.IsEnabled = !ThetaCheckBox.IsEnabled;
-        AlphaCheckBox.IsEnabled = !AlphaCheckBox.IsEnabled;
-        BetaLCheckBox.IsEnabled = !BetaLCheckBox.IsEnabled;
-        BetaHCheckBox.IsEnabled = !BetaHCheckBox.IsEnabled;
-        GammaCheckBox.IsEnabled = !GammaCheckBox.IsEnabled;
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            LoopPlaybackToggle.IsEnabled = isEnabled;
+            ThetaCheckBox.IsEnabled = isEnabled;
+            AlphaCheckBox.IsEnabled = isEnabled;
+            BetaLCheckBox.IsEnabled = isEnabled;
+            BetaHCheckBox.IsEnabled = isEnabled;
+            GammaCheckBox.IsEnabled = isEnabled;
+
+            // Check if the check boxes need to be rechecked (prevents the grayed out)
+            if (isEnabled)
+            {
+                for(int i = 0; i < 2; i++)
+                {
+                    LoopPlaybackToggle.IsToggled = !LoopPlaybackToggle.IsToggled;
+                    ThetaCheckBox.IsChecked = !ThetaCheckBox.IsChecked;
+                    AlphaCheckBox.IsChecked = !AlphaCheckBox.IsChecked;
+                    BetaLCheckBox.IsChecked = !BetaLCheckBox.IsChecked;
+                    BetaHCheckBox.IsChecked = !BetaHCheckBox.IsChecked;
+                    GammaCheckBox.IsChecked = !GammaCheckBox.IsChecked;
+                    Thread.Sleep(100);
+                }
+            }
+        });
     }
 
-    private void ToggleSensorCheckboxes()
+    private void SensorCheckboxesEnabled(bool isEnabled)
     {
-        AF3CheckBox.IsEnabled = !AF3CheckBox.IsEnabled;
-        F7CheckBox.IsEnabled = !F7CheckBox.IsEnabled;
-        F3CheckBox.IsEnabled = !F3CheckBox.IsEnabled;
-        FC5CheckBox.IsEnabled = !FC5CheckBox.IsEnabled;
-        T7CheckBox.IsEnabled = !T7CheckBox.IsEnabled;
-        P7CheckBox.IsEnabled = !P7CheckBox.IsEnabled;
-        O1CheckBox.IsEnabled = !O1CheckBox.IsEnabled;
-        O2CheckBox.IsEnabled = !O2CheckBox.IsEnabled;
-        P8CheckBox.IsEnabled = !P8CheckBox.IsEnabled;
-        T8CheckBox.IsEnabled = !T8CheckBox.IsEnabled;
-        FC6CheckBox.IsEnabled = !FC6CheckBox.IsEnabled;
-        F4CheckBox.IsEnabled = !F4CheckBox.IsEnabled;
-        F8CheckBox.IsEnabled = !F8CheckBox.IsEnabled;
-        AF4CheckBox.IsEnabled = !AF4CheckBox.IsEnabled;
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            AF3CheckBox.IsEnabled = isEnabled;
+            F7CheckBox.IsEnabled = isEnabled;
+            F3CheckBox.IsEnabled = isEnabled;
+            FC5CheckBox.IsEnabled = isEnabled;
+            T7CheckBox.IsEnabled = isEnabled;
+            P7CheckBox.IsEnabled = isEnabled;
+            O1CheckBox.IsEnabled = isEnabled;
+            O2CheckBox.IsEnabled = isEnabled;
+            P8CheckBox.IsEnabled = isEnabled;
+            T8CheckBox.IsEnabled = isEnabled;
+            FC6CheckBox.IsEnabled = isEnabled;
+            F4CheckBox.IsEnabled = isEnabled;
+            F8CheckBox.IsEnabled = isEnabled;
+            AF4CheckBox.IsEnabled = isEnabled;
+
+            // Check if the check boxes need to be rechecked (prevents the grayed out)
+            if (isEnabled)
+            {
+                for(int i = 0; i < 2; i++)
+                {
+                    AF3CheckBox.IsChecked = !AF3CheckBox.IsChecked;
+                    F7CheckBox.IsChecked = !F7CheckBox.IsChecked;
+                    F3CheckBox.IsChecked = !F3CheckBox.IsChecked;
+                    FC5CheckBox.IsChecked = !FC5CheckBox.IsChecked;
+                    T7CheckBox.IsChecked = !T7CheckBox.IsChecked;
+                    P7CheckBox.IsChecked = !P7CheckBox.IsChecked;
+                    O1CheckBox.IsChecked = !O1CheckBox.IsChecked;
+                    O2CheckBox.IsChecked = !O2CheckBox.IsChecked;
+                    P8CheckBox.IsChecked = !P8CheckBox.IsChecked;
+                    T8CheckBox.IsChecked = !T8CheckBox.IsChecked;
+                    FC6CheckBox.IsChecked = !FC6CheckBox.IsChecked;
+                    F4CheckBox.IsChecked = !F4CheckBox.IsChecked;
+                    F8CheckBox.IsChecked = !F8CheckBox.IsChecked;
+                    AF4CheckBox.IsChecked = !AF4CheckBox.IsChecked;
+                    Thread.Sleep(100);
+                }
+            }
+        });
     }
 
     private void DisplayPath(string path)
@@ -452,42 +506,306 @@ public partial class CSVToSoundPage : ContentPage
         _transmitO2 = O2CheckBox.IsChecked;
     }
 
-
-    // #################################################
-    // ##                                             ##
-    // ##    All Code Above This Point is Approved    ##
-    // ##                                             ##
-    // #################################################
-
-
-
     public void OnBaselineBtnClicked(object sender, EventArgs e)
     {
         Debug.WriteLine("Baseline Button Clicked");
+        PlaybackStateCaller(MindToSoundEmulator.PlaybackStates.BASELINE);
     }
 
     public void OnTransitionToThBtnClicked(object sender, EventArgs e)
     {
         Debug.WriteLine("Transition to Transient Hypofrontality Button Clicked");
+        PlaybackStateCaller(MindToSoundEmulator.PlaybackStates.TRANSITION_TO_TH);
     }
 
     public void OnTransientHypofrontalityBtnClicked(object sender, EventArgs e)
     {
         Debug.WriteLine("Transient Hypofrontality Button Clicked");
+        PlaybackStateCaller(MindToSoundEmulator.PlaybackStates.TRANSIENT_HYPOFRONTALITY);
     }
 
-    public async void OnTransitionToFlowBtnClicked(object sender, EventArgs e)
+    public void OnTransitionToFlowBtnClicked(object sender, EventArgs e)
     {
         Debug.WriteLine("Transition to Flow Button Clicked");
+        PlaybackStateCaller(MindToSoundEmulator.PlaybackStates.TRANSITION_TO_FLOW);
     }
 
-    public async void OnFlowBtnClicked(object sender, EventArgs e)
+    public void OnFlowBtnClicked(object sender, EventArgs e)
     {
         Debug.WriteLine("Flow Button Clicked");
+        PlaybackStateCaller(MindToSoundEmulator.PlaybackStates.FLOW);
+    }
+
+    private async void PlaybackStateCaller(MindToSoundEmulator.PlaybackStates state)
+    {
+        // Set the current transmission state to start transmission
+        _currentTransmissionState = MindToSoundEmulator.TransmissionStates.STARTING;
+
+        // Set the current playback state
+        _currentPlaybackState = state;
+
+        // Handle the transmission based on the current state
+        await HandleTransmission();
+    }
+
+    private async Task HandleTransmission()
+    {
+        // Act on the current transmission state
+        switch(_currentTransmissionState)
+        {
+            case MindToSoundEmulator.TransmissionStates.OFF:
+                {
+                    Debug.WriteLine("[STATE MACHING] - Acting on state: \'OFF\'");
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        // Enable all UI elements
+                        FileElementsEnabled(true);
+                        WaveCheckboxesEnabled(true);
+                        SensorCheckboxesEnabled(true);
+                        SelectPlaybackStatesEnabled(_availablePlaybackStates, true);
+                        OSCElementsEnabled(true);
+
+                        // Restore the transmission button to send
+                        TransmissionButton.Text = "Send";
+                        TransmissionButton.BackgroundColor = _green;
+                    });
+
+                    break;
+                }
+            case MindToSoundEmulator.TransmissionStates.STARTING:
+                {
+                    Debug.WriteLine("[STATE MACHING] - Acting on state: \'STARTING\'");
+                    // Set up the UI for transmission
+                    SetupTransmission();
+
+                    // Set the transmission start time
+                    _transmissionStartTime = DateTime.Now;
+
+                    // Check if there is a set state
+                    if (_currentPlaybackState is MindToSoundEmulator.PlaybackStates.ALL)
+                    {
+                        // Set the transmission state to all states
+                        _currentTransmissionState = MindToSoundEmulator.TransmissionStates.ALL;
+                    }
+                    else
+                    {
+                        // Set the transmission state to transmitting states
+                        _currentTransmissionState = MindToSoundEmulator.TransmissionStates.SELECT;
+                    }
+
+                    // Create a new cancellation token
+                    _transmissionCT = new CancellationTokenSource();
+
+                    // Recursively call this method to handle the transmitting
+                    await HandleTransmission();
+                    break;
+                }
+            case MindToSoundEmulator.TransmissionStates.SELECT:
+                {
+                    Debug.WriteLine("[STATE MACHING] - Acting on state: \'SELECT\'");
+                    // Play the selected playback state
+                    _transmissionThread = new Thread(() =>
+                    {
+                        try
+                        {
+                            do
+                            {
+                                // Play the selected playback state
+                                _emulator?.PlayState(_currentPlaybackState,
+                                                    [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma],
+                                                    [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4],
+                                                    _transmissionCT.Token);
+
+                                // Check for cancellation
+                                _transmissionCT.Token.ThrowIfCancellationRequested();
+                            }
+                            while (LoopPlaybackToggle.IsToggled && !_transmissionCT.Token.IsCancellationRequested);
+
+                            // Cancel thread using the cancellation token
+                            _transmissionCT.Cancel();
+                        }
+                        catch (OperationCanceledException) { }
+                    });
+
+                    // Handle the main thread items while transmitting
+                    await HandleTransmissionHelper();
+                    break;
+                }
+            case MindToSoundEmulator.TransmissionStates.ALL:
+                {
+                    Debug.WriteLine("[STATE MACHING] - Acting on state: \'ALL\'");
+                    // Play the selected playback state
+                    _transmissionThread = new Thread(() =>
+                    {
+                        try
+                        {
+                            // Play the selected playback state
+                            _emulator?.PlayFile([_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma],
+                                                [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4],
+                                                _transmissionCT.Token);
+
+                            // Cancel thread using the cancellation token
+                            _transmissionCT.Cancel();
+                        }
+                        catch (OperationCanceledException) { }
+                    });
+
+                    // Handle the main thread items while transmitting
+                    await HandleTransmissionHelper();
+                    break;
+                }
+            case MindToSoundEmulator.TransmissionStates.STOPPING:
+                {
+                    Debug.WriteLine("[STATE MACHING] - Acting on state: \'STOPPING\'");
+                    // Lock out the transmission mutex
+                    _transmissionLockout.WaitOne();
+
+                    // Stop the emulator
+                    _emulator?.StopTransmission();
+
+                    // Release the transmission mutex
+                    _transmissionLockout.ReleaseMutex();
+
+                    // Set the thread to null
+                    _transmissionThread = null;
+
+                    // Set the current transmission state to off
+                    _currentTransmissionState = MindToSoundEmulator.TransmissionStates.OFF;
+
+                    // Recursively call this method to handle the off state
+                    await HandleTransmission();
+                    break;
+                }
+        }
+    }
+
+    private  async Task HandleTransmissionHelper()
+    {
+        // Start the thread
+        _transmissionThread?.Start();
+
+        // Update UI statistics (acts as a pause from continuing from this point)
+        await UpdateUIStats();
+
+        // Set the current state to now be stopping
+        _currentTransmissionState = MindToSoundEmulator.TransmissionStates.STOPPING;
+
+        // Release the transmission mutex
+        _transmissionLockout.ReleaseMutex();
+
+        // Recursively call this method to handle the stopping state
+        await HandleTransmission();
+    }
+
+    private void FileElementsEnabled(bool isEnabled)
+    {
+        SelectFileButton.IsEnabled = isEnabled;
+    }
+
+    private void OSCElementsEnabled(bool isEnabled)
+    {
+        OSCIpAddress.IsEnabled = isEnabled;
+        OSCPortNum.IsEnabled = isEnabled;
+    }
+
+    private void SetupTransmission()
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            // Set the transmission button to stop
+            TransmissionButton.Text = "Stop";
+            TransmissionButton.BackgroundColor = _red;
+
+            // Disable all UI elements
+            FileElementsEnabled(false);
+            WaveCheckboxesEnabled(false);
+            SensorCheckboxesEnabled(false);
+            PlaybackStatesEnabled(false);
+            OSCElementsEnabled(false);
+        });
+
+        // Get the OSC IP
+        if(OSCIpAddress.Text is not null)
+        {
+            // Update the IP
+            _oscIP = OSCIpAddress.Text;
+        }
+
+        // Get the OSC Port Number
+        if(OSCPortNum.Text is not null)
+        {
+            // Update the port number
+            _oscPort = Convert.ToInt32(OSCPortNum.Text);
+        }
+
+        // Lock out the transmission mutex
+        _transmissionLockout.WaitOne();
+
+        // Set the OSC trasmission info
+        _emulator?.SetOSCInfo(_oscIP, _oscPort);
+    }
+
+    private async Task UpdateUIStats()
+    {
+        while(!_transmissionCT.Token.IsCancellationRequested)
+        {
+            // Update the UI
+            UpdateUIStatsHelper();
+
+            await Task.Delay(250);
+        }
+
+        // Update the UI one last time
+        UpdateUIStatsHelper();
+    }
+
+    private void UpdateUIStatsHelper()
+    {
+        // Calculate the elapsed time
+        string elapsedTime = (DateTime.Now - _transmissionStartTime).ToString(@"hh\:mm\:ss");
+
+        // Get the total samplings sent
+        string totalSamplings = _emulator.GetTotalSamplings();
+
+        // Update the UI 
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            ElapsedTransmissionTime.Text = elapsedTime;
+            TotalSamplingsTransmitted.Text = totalSamplings;
+        });
     }
 
     public async void OnTransmissionClicked(object sender, EventArgs e)
     {
         Debug.WriteLine("Transmission Button Clicked");
+
+        // Act on the current state
+        switch (_currentTransmissionState)
+        {
+            case MindToSoundEmulator.TransmissionStates.OFF:
+                Debug.WriteLine("[Transmission Button] - Starting Transmission");
+                // Set the current playback state to all
+                _currentPlaybackState = MindToSoundEmulator.PlaybackStates.ALL;
+
+                // Set the current transmission state to starting
+                _currentTransmissionState = MindToSoundEmulator.TransmissionStates.STARTING;
+
+                // Call the handler method
+                await HandleTransmission();
+                break;
+
+            case MindToSoundEmulator.TransmissionStates.SELECT:
+            case MindToSoundEmulator.TransmissionStates.ALL:
+                Debug.WriteLine("[Transmission Button] - Stopping Transmission");
+                // Cancel thread using the cancellation token
+                _transmissionCT.Cancel();
+
+                // Set the current transmission state to stopping
+                _currentTransmissionState = MindToSoundEmulator.TransmissionStates.STOPPING;
+
+                // Call the handler method
+                await HandleTransmission();
+                break;
+        }
     }
 }
