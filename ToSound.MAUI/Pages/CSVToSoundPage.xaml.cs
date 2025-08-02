@@ -210,7 +210,6 @@ public partial class CSVToSoundPage : ContentPage
         else
         {
             await DisplayAlert("Warning", "Unable to display file related information.", "CONTINUE");
-            return;
         }
         
         // Enable the send button
