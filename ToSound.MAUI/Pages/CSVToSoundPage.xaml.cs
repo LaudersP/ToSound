@@ -210,8 +210,16 @@ public partial class CSVToSoundPage : ContentPage
         else
         {
             await DisplayAlert("Warning", "Unable to display file related information.", "CONTINUE");
+
+            // Set the file info text to empty
+            VolunteerName.Text = "";
+            SessionId.Text = "";
+            RecordingDate.Text = "";
+            RecordingNum.Text = "";
+            DataLength.Text = "";
+            RecordingLength.Text = "";
         }
-        
+
         // Enable the send button
         TransmissionButton.IsEnabled = true;
 
