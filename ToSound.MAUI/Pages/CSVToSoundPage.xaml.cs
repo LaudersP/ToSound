@@ -65,36 +65,36 @@ public partial class CSVToSoundPage : ContentPage
         RecordingDate.Text = "";
         RecordingLength.Text = "";
 
+        // Enable the wave frequency checkboxes
+        LoopPlaybackToggle.IsEnabled = true;
+        ThetaCheckBox.IsEnabled = true;
+        AlphaCheckBox.IsEnabled = true;
+        BetaLCheckBox.IsEnabled = true;
+        BetaHCheckBox.IsEnabled = true;
+        GammaCheckBox.IsEnabled = true;
+
+        // Enable the sensor checkboxes
+        AF3CheckBox.IsEnabled = true;
+        F7CheckBox.IsEnabled = true;
+        F3CheckBox.IsEnabled = true;
+        FC5CheckBox.IsEnabled = true;
+        T7CheckBox.IsEnabled = true;
+        P7CheckBox.IsEnabled = true;
+        O1CheckBox.IsEnabled = true;
+        O2CheckBox.IsEnabled = true;
+        P8CheckBox.IsEnabled = true;
+        T8CheckBox.IsEnabled = true;
+        FC6CheckBox.IsEnabled = true;
+        F4CheckBox.IsEnabled = true;
+        F8CheckBox.IsEnabled = true;
+        AF4CheckBox.IsEnabled = true;
+
         // Disable the playback state buttons
         BaselineBtn.IsEnabled = false;
         TransitionToThBtn.IsEnabled = false;
         TransientHypofrontalityBtn.IsEnabled = false;
         TransitionToFlowBtn.IsEnabled = false;
         FlowBtn.IsEnabled = false;
-
-        // Disable the wave frequency checkboxes
-        LoopPlaybackToggle.IsEnabled = false;
-        ThetaCheckBox.IsEnabled = false;
-        AlphaCheckBox.IsEnabled = false;
-        BetaLCheckBox.IsEnabled = false;
-        BetaHCheckBox.IsEnabled = false;
-        GammaCheckBox.IsEnabled = false;
-
-        // Disable the sensor checkboxes
-        AF3CheckBox.IsEnabled = false;
-        F7CheckBox.IsEnabled = false;
-        F3CheckBox.IsEnabled = false;
-        FC5CheckBox.IsEnabled = false;
-        T7CheckBox.IsEnabled = false;
-        P7CheckBox.IsEnabled = false;
-        O1CheckBox.IsEnabled = false;
-        O2CheckBox.IsEnabled = false;
-        P8CheckBox.IsEnabled = false;
-        T8CheckBox.IsEnabled = false;
-        FC6CheckBox.IsEnabled = false;
-        F4CheckBox.IsEnabled = false;
-        F8CheckBox.IsEnabled = false;
-        AF4CheckBox.IsEnabled = false;
     }
 
     private async void OnSelectFileButtonClicked(object sender, EventArgs e)
