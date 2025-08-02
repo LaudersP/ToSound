@@ -930,21 +930,16 @@ namespace ToSound.Pages
                 // Iterate through the sensors
                 for (int i = 0; i < _sensors.Length; i++)
                 {
-                    // Check if the sensor is in use
-                    if (_sensorFlagsList[i])
+                    // Iterate through the bands
+                    for (int j = 0; j < _bands.Length; j++)
                     {
-                        // Iterate through the bands
-                        for (int j = 0; j < _bands.Length; j++)
-                        {
-                            // Check if the band is in use
-                            if (_bandFlagsList[j])
-                            {
-                                // Zero out the channel
-                                object[] args = { 0.0f };
-                                _osc.SendMessage($"/{_bands[j]}/{_sensors[i]}", args);
-                            }
-                        }
+                            // Zero out the channel
+                            object[] args = { 0.0f };
+                            _osc.SendMessage($"/{_bands[j]}/{_sensors[i]}", args);
                     }
+
+                    // Slight delay to prevent flooding the OSC
+                    Thread.Sleep(1);
                 }
             }
 
