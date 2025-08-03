@@ -20,7 +20,7 @@ namespace ToSound.Core
             _udpClient = new UdpClient(_ipAddress, _portNum);
         }
 
-        public async void SendMessage(string address, params object[] args)
+        public void SendMessage(string address, params object[] args)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace ToSound.Core
                 var message = new OscMessage(new Address(address), args);
 
                 // Send the OSC message
-                _udpClient.SendMessageAsync(message).Wait();
+                _udpClient.SendMessageAsync(message);
             }
             catch (Exception)
             {

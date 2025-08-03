@@ -613,25 +613,18 @@ public partial class CSVToSoundPage : ContentPage
                     // Play the selected playback state
                     _transmissionThread = new Thread(() =>
                     {
-                        try
+                        do
                         {
-                            do
-                            {
-                                // Play the selected playback state
-                                _emulator?.PlayState(_currentPlaybackState,
-                                                    [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma],
-                                                    [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4],
-                                                    _transmissionCT.Token);
-
-                                // Check for cancellation
-                                _transmissionCT.Token.ThrowIfCancellationRequested();
-                            }
-                            while (LoopPlaybackToggle.IsToggled && !_transmissionCT.Token.IsCancellationRequested);
-
-                            // Cancel thread using the cancellation token
-                            _transmissionCT.Cancel();
+                            // Play the selected playback state
+                            _emulator?.PlayState(_currentPlaybackState,
+                                                [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma],
+                                                [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4],
+                                                _transmissionCT.Token);
                         }
-                        catch (OperationCanceledException) { }
+                        while (LoopPlaybackToggle.IsToggled && !_transmissionCT.Token.IsCancellationRequested);
+
+                        // Cancel thread using the cancellation token
+                        _transmissionCT.Cancel();
                     });
 
                     // Handle the main thread items while transmitting
@@ -664,6 +657,9 @@ public partial class CSVToSoundPage : ContentPage
             case MindToSoundEmulator.TransmissionStates.STOPPING:
                 {
                     Debug.WriteLine("[STATE MACHING] - Acting on state: \'STOPPING\'");
+                    // Join the thread
+                    _transmissionThread?.Join();
+
                     // Lock out the transmission mutex
                     _transmissionLockout.WaitOne();
 

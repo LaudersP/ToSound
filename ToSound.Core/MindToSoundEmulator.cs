@@ -245,31 +245,24 @@ namespace ToSound.Core
         // Method to send the playback state data via OSC
         public void PlayState(PlaybackStates playbackState, List<bool> enabledBands, List<bool> enabledSensors, CancellationToken cancellationToken)
         {
-            try
+            // Send the desired states data
+            switch (playbackState)
             {
-                // Send the desired states data
-                switch (playbackState)
-                {
-                    case PlaybackStates.BASELINE:
-                        SendDataByIndexes(_baselineDataIndexes, enabledBands, enabledSensors, cancellationToken);
-                        break;
-                    case PlaybackStates.TRANSITION_TO_TH:
-                        SendDataByIndexes(_transitionToThDataIndexes, enabledBands, enabledSensors, cancellationToken);
-                        break;
-                    case PlaybackStates.TRANSIENT_HYPOFRONTALITY:
-                        SendDataByIndexes(_thDataIndexes, enabledBands, enabledSensors, cancellationToken);
-                        break;
-                    case PlaybackStates.TRANSITION_TO_FLOW:
-                        SendDataByIndexes(_transitionToFlowDataIndexes, enabledBands, enabledSensors, cancellationToken);
-                        break;
-                    case PlaybackStates.FLOW:
-                        SendDataByIndexes(_flowDataIndexes, enabledBands, enabledSensors, cancellationToken);
-                        break;
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                return;
+                case PlaybackStates.BASELINE:
+                    SendDataByIndexes(_baselineDataIndexes, enabledBands, enabledSensors, cancellationToken);
+                    break;
+                case PlaybackStates.TRANSITION_TO_TH:
+                    SendDataByIndexes(_transitionToThDataIndexes, enabledBands, enabledSensors, cancellationToken);
+                    break;
+                case PlaybackStates.TRANSIENT_HYPOFRONTALITY:
+                    SendDataByIndexes(_thDataIndexes, enabledBands, enabledSensors, cancellationToken);
+                    break;
+                case PlaybackStates.TRANSITION_TO_FLOW:
+                    SendDataByIndexes(_transitionToFlowDataIndexes, enabledBands, enabledSensors, cancellationToken);
+                    break;
+                case PlaybackStates.FLOW:
+                    SendDataByIndexes(_flowDataIndexes, enabledBands, enabledSensors, cancellationToken);
+                    break;
             }
         }
 
@@ -390,16 +383,6 @@ namespace ToSound.Core
         // Method for stopping transmission
         public void StopTransmission()
         {
-            // Zero out the OSC client
-            ZeroOSCClient();
-
-            // Close the OSC client
-            _oscClient?.Close();
-        }
-
-        // Method for zeroing out the OSC client
-        private void ZeroOSCClient()
-        {
             // Iteracte through each sensor
             foreach (string sensor in _sensors)
             {
@@ -412,8 +395,16 @@ namespace ToSound.Core
                     // Send a zero message
                     _oscClient?.SendMessage(oscAddress, new object[] { 0.0f });
                 }
-                Thread.Sleep(Convert.ToInt32(_dataTransmissionDelay));
             }
+
+            // Close the OSC connection
+            _oscClient?.Close();
+        }
+
+        // Method for zeroing out the OSC client
+        private void ZeroOSCClient()
+        {
+            
         }
 
         // Method for getting the number of data points sent
