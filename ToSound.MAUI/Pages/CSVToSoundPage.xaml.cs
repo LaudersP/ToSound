@@ -610,6 +610,9 @@ public partial class CSVToSoundPage : ContentPage
             case MindToSoundEmulator.TransmissionStates.SELECT:
                 {
                     Debug.WriteLine("[STATE MACHING] - Acting on state: \'SELECT\'");
+                    // Claim the transmission mutex
+                    _transmissionLockout.WaitOne();
+
                     // Play the selected playback state
                     _transmissionThread = new Thread(() =>
                     {
@@ -629,11 +632,17 @@ public partial class CSVToSoundPage : ContentPage
 
                     // Handle the main thread items while transmitting
                     await HandleTransmissionHelper();
+
+                    // Release the transmission mutex
+                    _transmissionLockout.ReleaseMutex();
                     break;
                 }
             case MindToSoundEmulator.TransmissionStates.ALL:
                 {
                     Debug.WriteLine("[STATE MACHING] - Acting on state: \'ALL\'");
+                    // Claim the transmission mutex
+                    _transmissionLockout.WaitOne();
+
                     // Play the selected playback state
                     _transmissionThread = new Thread(() =>
                     {
@@ -652,6 +661,9 @@ public partial class CSVToSoundPage : ContentPage
 
                     // Handle the main thread items while transmitting
                     await HandleTransmissionHelper();
+
+                    // Release the transmission mutex
+                    _transmissionLockout.ReleaseMutex();
                     break;
                 }
             case MindToSoundEmulator.TransmissionStates.STOPPING:
@@ -692,9 +704,6 @@ public partial class CSVToSoundPage : ContentPage
 
         // Set the current state to now be stopping
         _currentTransmissionState = MindToSoundEmulator.TransmissionStates.STOPPING;
-
-        // Release the transmission mutex
-        _transmissionLockout.ReleaseMutex();
 
         // Recursively call this method to handle the stopping state
         await HandleTransmission();
@@ -740,9 +749,6 @@ public partial class CSVToSoundPage : ContentPage
             // Update the port number
             _oscPort = Convert.ToInt32(OSCPortNum.Text);
         }
-
-        // Lock out the transmission mutex
-        _transmissionLockout.WaitOne();
 
         // Set the OSC trasmission info
         _emulator?.SetOSCInfo(_oscIP, _oscPort);
@@ -809,6 +815,17 @@ public partial class CSVToSoundPage : ContentPage
                 // Call the handler method
                 await HandleTransmission();
                 break;
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        // Check if we are transmitting data
+        if (_transmissionThread is not null)
+        {
+            OnTransmissionClicked(new(), new());
         }
     }
 }

@@ -1030,5 +1030,22 @@ namespace ToSound.Pages
                 // PASS
             }
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            // Check if we are recording data
+            if(_isRecording)
+            {
+                OnRecordClicked(new(), new());
+            }
+
+            // Check if we are transmitting data
+            if(_isTransmittingData)
+            {
+                OnTransmissionClicked(new(), new());
+            }
+        }
     }
 }
