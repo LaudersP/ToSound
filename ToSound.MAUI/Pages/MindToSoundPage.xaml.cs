@@ -426,6 +426,9 @@ namespace ToSound.Pages
                     _statisticsUpdaterThread = null;
                 }
 
+                // Update the stats one last time
+                UpdateTransmissionStats();
+
                 // Reset the samplings transmitted variable
                 _numSamplingsTransmitted = 0;
 
@@ -543,28 +546,11 @@ namespace ToSound.Pages
                 // Disable sensor checkboxs
                 ToggleSensorCheckboxs();
 
-                // Assign the band flags to the band flags list
-                _bandFlagsList.Add(_transmitTheta);
-                _bandFlagsList.Add(_transmitAlpha);
-                _bandFlagsList.Add(_transmitBetaL);
-                _bandFlagsList.Add(_transmitBetaH);
-                _bandFlagsList.Add(_transmitGamma);
+                // Get the selected wave frequencies
+                _bandFlagsList = [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma];
 
-                // Assign the sensor flags to the sensor flags list
-                _sensorFlagsList.Add(_transmitAF3);
-                _sensorFlagsList.Add(_transmitF7);
-                _sensorFlagsList.Add(_transmitF3);
-                _sensorFlagsList.Add(_transmitFC5);
-                _sensorFlagsList.Add(_transmitT7);
-                _sensorFlagsList.Add(_transmitP7);
-                _sensorFlagsList.Add(_transmitO1);
-                _sensorFlagsList.Add(_transmitO2);
-                _sensorFlagsList.Add(_transmitP8);
-                _sensorFlagsList.Add(_transmitT8);
-                _sensorFlagsList.Add(_transmitFC6);
-                _sensorFlagsList.Add(_transmitF4);
-                _sensorFlagsList.Add(_transmitF8);
-                _sensorFlagsList.Add(_transmitAF4);
+                // Get the selected sensors
+                _sensorFlagsList = [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4];
 
                 // Raise the transmitting flag
                 _isTransmittingData = true;
@@ -596,6 +582,9 @@ namespace ToSound.Pages
 
                 // Lower the recording flag
                 _isRecording = false;
+
+                // Update the UI stats for the final number
+                UpdateRecordingStats();
 
                 // Zero the recordings saved variable
                 _statsVariableMutex.WaitOne();
@@ -839,7 +828,7 @@ namespace ToSound.Pages
 
             // Output data in OSC protocol
             // ... /{frequency}/{sensor} {value}
-            for(int i = 1; i < data.Count; i++)
+            for (int i = 1; i < data.Count; i++)
             {
                 // Determine the band
                 string band = _bands[(i - 1) % 5];
@@ -863,6 +852,14 @@ namespace ToSound.Pages
                     _numSamplingsTransmitted++;
                     Debug.WriteLine($"Sampling Transmitted: {_numSamplingsTransmitted}");
                     _statsVariableMutex.ReleaseMutex();
+                }
+                else
+                {
+                    // Construct the arguments
+                    object[] args = { 0.0f };
+
+                    // Send the OSC message
+                    _osc.SendMessage($"/{band}/{sensor}", args);
                 }
             }
 
@@ -907,10 +904,23 @@ namespace ToSound.Pages
                 _fs.Write(lastVal, 0, lastVal.Length);
             }
 
+            // Get the number of samplings sent
+            uint bandsSelected = 0;
+            foreach (bool band in _bandFlagsList)
+            {
+                if (band) bandsSelected++;
+            }
+            uint sensorsSelected = 0;
+            foreach (bool sensor in _sensorFlagsList)
+            {
+                if (sensor) sensorsSelected++;
+            }
+
             // Update the sampling recorded variable
             _statsVariableMutex.WaitOne();
-            _numSamplingsSaved += Convert.ToUInt16(data.Count - 1);
+            _numSamplingsSaved += bandsSelected * sensorsSelected;
             _statsVariableMutex.ReleaseMutex();
+            Debug.WriteLine($"Samplings Recorded: {_numSamplingsSaved}");
         }
 
         private void ZeroOSCChannels()
@@ -994,12 +1004,24 @@ namespace ToSound.Pages
                 // Calculat ethe elapsed time
                 var elapsedTime = DateTime.Now - _recordingStartTime;
 
+                // Get the number of samplings sent
+                uint bandsSelected = 0;
+                foreach (bool band in _bandFlagsList)
+                {
+                    if (band) bandsSelected++;
+                }
+                uint sensorsSelected = 0;
+                foreach (bool sensor in _sensorFlagsList)
+                {
+                    if (sensor) sensorsSelected++;
+                }
+
                 // Update the UI on the main thread
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ElapsedRecordTime.Text = elapsedTime.ToString(@"hh\:mm\:ss");
                     _statsVariableMutex.WaitOne();
-                    TotalSamplingsSaved.Text = _numSamplingsSaved.ToString();
+                    TotalSamplingsSaved.Text = (_numSamplingsSaved - (bandsSelected * sensorsSelected)).ToString();
                     _statsVariableMutex.ReleaseMutex();
                 });
             }
