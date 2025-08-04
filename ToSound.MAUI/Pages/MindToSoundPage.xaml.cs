@@ -37,6 +37,8 @@ namespace ToSound.Pages
         private static Mutex _transmissionMutex = new();
         private static Mutex _statsVariableMutex = new();
         private Thread? _statisticsUpdaterThread = null;
+        private bool _wavesCheckboxesDisabled = false;
+        private bool _sensorCheckboxesDisabled = false;
 
         // Flags
         private bool _isHeadsetConnected = false;
@@ -775,31 +777,72 @@ namespace ToSound.Pages
 
         private void ToggleWaveCheckboxs()
         {
+            _wavesCheckboxesDisabled = !_wavesCheckboxesDisabled;
+
             // Toggle checkboxs
-            ThetaCheckBox.IsEnabled = !ThetaCheckBox.IsEnabled;
-            AlphaCheckBox.IsEnabled = !AlphaCheckBox.IsEnabled;
-            BetaLCheckBox.IsEnabled = !BetaLCheckBox.IsEnabled;
-            BetaHCheckBox.IsEnabled = !BetaHCheckBox.IsEnabled;
-            GammaCheckBox.IsEnabled = !GammaCheckBox.IsEnabled;
+            ThetaCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            AlphaCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            BetaLCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            BetaHCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            GammaCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+
+            // Check if they need checking to prevent greyed out checkboxs
+            if (!_wavesCheckboxesDisabled)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    ThetaCheckBox.IsChecked = !ThetaCheckBox.IsChecked;
+                    AlphaCheckBox.IsChecked = !AlphaCheckBox.IsChecked;
+                    BetaLCheckBox.IsChecked = !BetaLCheckBox.IsChecked;
+                    BetaHCheckBox.IsChecked = !BetaHCheckBox.IsChecked;
+                    GammaCheckBox.IsChecked = !GammaCheckBox.IsChecked;
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         private void ToggleSensorCheckboxs()
         {
+            _sensorCheckboxesDisabled = !_sensorCheckboxesDisabled;
+
             // Toggle checkboxs
-            AF3CheckBox.IsEnabled = !AF3CheckBox.IsEnabled;
-            F7CheckBox.IsEnabled = !F7CheckBox.IsEnabled;
-            F3CheckBox.IsEnabled = !F3CheckBox.IsEnabled;
-            FC5CheckBox.IsEnabled = !FC5CheckBox.IsEnabled;
-            T7CheckBox.IsEnabled = !T7CheckBox.IsEnabled;
-            P7CheckBox.IsEnabled = !P7CheckBox.IsEnabled;
-            O1CheckBox.IsEnabled = !O1CheckBox.IsEnabled;
-            O2CheckBox.IsEnabled = !O2CheckBox.IsEnabled;
-            P8CheckBox.IsEnabled = !P8CheckBox.IsEnabled;
-            T8CheckBox.IsEnabled = !T8CheckBox.IsEnabled;
-            FC6CheckBox.IsEnabled = !FC6CheckBox.IsEnabled;
-            F4CheckBox.IsEnabled = !F4CheckBox.IsEnabled;
-            F8CheckBox.IsEnabled = !F8CheckBox.IsEnabled;
-            AF4CheckBox.IsEnabled = !AF4CheckBox.IsEnabled;
+            AF3CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F7CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F3CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            FC5CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            T7CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            P7CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            O1CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            O2CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            P8CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            T8CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            FC6CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F4CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F8CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            AF4CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+
+            // Check if they need checking to prevent greyed out checkboxs
+            if(!_sensorCheckboxesDisabled)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    AF3CheckBox.IsChecked = !AF3CheckBox.IsChecked;
+                    F7CheckBox.IsChecked = !F7CheckBox.IsChecked;
+                    F3CheckBox.IsChecked = !F3CheckBox.IsChecked;
+                    FC5CheckBox.IsChecked = !FC5CheckBox.IsChecked;
+                    T7CheckBox.IsChecked = !T7CheckBox.IsChecked;
+                    P7CheckBox.IsChecked = !P7CheckBox.IsChecked;
+                    O1CheckBox.IsChecked = !O1CheckBox.IsChecked;
+                    O2CheckBox.IsChecked = !O2CheckBox.IsChecked;
+                    P8CheckBox.IsChecked = !P8CheckBox.IsChecked;
+                    T8CheckBox.IsChecked = !T8CheckBox.IsChecked;
+                    FC6CheckBox.IsChecked = !FC6CheckBox.IsChecked;
+                    F4CheckBox.IsChecked = !F4CheckBox.IsChecked;
+                    F8CheckBox.IsChecked = !F8CheckBox.IsChecked;
+                    AF4CheckBox.IsChecked = !AF4CheckBox.IsChecked;
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         private void ToggleOSCEntries()
