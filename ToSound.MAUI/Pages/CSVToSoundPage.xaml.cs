@@ -65,36 +65,36 @@ public partial class CSVToSoundPage : ContentPage
         RecordingDate.Text = "";
         RecordingLength.Text = "";
 
+        // Enable the wave frequency checkboxes
+        LoopPlaybackToggle.IsEnabled = true;
+        ThetaCheckBox.IsEnabled = true;
+        AlphaCheckBox.IsEnabled = true;
+        BetaLCheckBox.IsEnabled = true;
+        BetaHCheckBox.IsEnabled = true;
+        GammaCheckBox.IsEnabled = true;
+
+        // Enable the sensor checkboxes
+        AF3CheckBox.IsEnabled = true;
+        F7CheckBox.IsEnabled = true;
+        F3CheckBox.IsEnabled = true;
+        FC5CheckBox.IsEnabled = true;
+        T7CheckBox.IsEnabled = true;
+        P7CheckBox.IsEnabled = true;
+        O1CheckBox.IsEnabled = true;
+        O2CheckBox.IsEnabled = true;
+        P8CheckBox.IsEnabled = true;
+        T8CheckBox.IsEnabled = true;
+        FC6CheckBox.IsEnabled = true;
+        F4CheckBox.IsEnabled = true;
+        F8CheckBox.IsEnabled = true;
+        AF4CheckBox.IsEnabled = true;
+
         // Disable the playback state buttons
         BaselineBtn.IsEnabled = false;
         TransitionToThBtn.IsEnabled = false;
         TransientHypofrontalityBtn.IsEnabled = false;
         TransitionToFlowBtn.IsEnabled = false;
         FlowBtn.IsEnabled = false;
-
-        // Disable the wave frequency checkboxes
-        LoopPlaybackToggle.IsEnabled = false;
-        ThetaCheckBox.IsEnabled = false;
-        AlphaCheckBox.IsEnabled = false;
-        BetaLCheckBox.IsEnabled = false;
-        BetaHCheckBox.IsEnabled = false;
-        GammaCheckBox.IsEnabled = false;
-
-        // Disable the sensor checkboxes
-        AF3CheckBox.IsEnabled = false;
-        F7CheckBox.IsEnabled = false;
-        F3CheckBox.IsEnabled = false;
-        FC5CheckBox.IsEnabled = false;
-        T7CheckBox.IsEnabled = false;
-        P7CheckBox.IsEnabled = false;
-        O1CheckBox.IsEnabled = false;
-        O2CheckBox.IsEnabled = false;
-        P8CheckBox.IsEnabled = false;
-        T8CheckBox.IsEnabled = false;
-        FC6CheckBox.IsEnabled = false;
-        F4CheckBox.IsEnabled = false;
-        F8CheckBox.IsEnabled = false;
-        AF4CheckBox.IsEnabled = false;
     }
 
     private async void OnSelectFileButtonClicked(object sender, EventArgs e)
@@ -210,9 +210,16 @@ public partial class CSVToSoundPage : ContentPage
         else
         {
             await DisplayAlert("Warning", "Unable to display file related information.", "CONTINUE");
-            return;
+
+            // Set the file info text to empty
+            VolunteerName.Text = "";
+            SessionId.Text = "";
+            RecordingDate.Text = "";
+            RecordingNum.Text = "";
+            DataLength.Text = "";
+            RecordingLength.Text = "";
         }
-        
+
         // Enable the send button
         TransmissionButton.IsEnabled = true;
 
@@ -603,37 +610,39 @@ public partial class CSVToSoundPage : ContentPage
             case MindToSoundEmulator.TransmissionStates.SELECT:
                 {
                     Debug.WriteLine("[STATE MACHING] - Acting on state: \'SELECT\'");
+                    // Claim the transmission mutex
+                    _transmissionLockout.WaitOne();
+
                     // Play the selected playback state
                     _transmissionThread = new Thread(() =>
                     {
-                        try
+                        do
                         {
-                            do
-                            {
-                                // Play the selected playback state
-                                _emulator?.PlayState(_currentPlaybackState,
-                                                    [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma],
-                                                    [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4],
-                                                    _transmissionCT.Token);
-
-                                // Check for cancellation
-                                _transmissionCT.Token.ThrowIfCancellationRequested();
-                            }
-                            while (LoopPlaybackToggle.IsToggled && !_transmissionCT.Token.IsCancellationRequested);
-
-                            // Cancel thread using the cancellation token
-                            _transmissionCT.Cancel();
+                            // Play the selected playback state
+                            _emulator?.PlayState(_currentPlaybackState,
+                                                [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma],
+                                                [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4],
+                                                _transmissionCT.Token);
                         }
-                        catch (OperationCanceledException) { }
+                        while (LoopPlaybackToggle.IsToggled && !_transmissionCT.Token.IsCancellationRequested);
+
+                        // Cancel thread using the cancellation token
+                        _transmissionCT.Cancel();
                     });
 
                     // Handle the main thread items while transmitting
                     await HandleTransmissionHelper();
+
+                    // Release the transmission mutex
+                    _transmissionLockout.ReleaseMutex();
                     break;
                 }
             case MindToSoundEmulator.TransmissionStates.ALL:
                 {
                     Debug.WriteLine("[STATE MACHING] - Acting on state: \'ALL\'");
+                    // Claim the transmission mutex
+                    _transmissionLockout.WaitOne();
+
                     // Play the selected playback state
                     _transmissionThread = new Thread(() =>
                     {
@@ -652,11 +661,17 @@ public partial class CSVToSoundPage : ContentPage
 
                     // Handle the main thread items while transmitting
                     await HandleTransmissionHelper();
+
+                    // Release the transmission mutex
+                    _transmissionLockout.ReleaseMutex();
                     break;
                 }
             case MindToSoundEmulator.TransmissionStates.STOPPING:
                 {
                     Debug.WriteLine("[STATE MACHING] - Acting on state: \'STOPPING\'");
+                    // Join the thread
+                    _transmissionThread?.Join();
+
                     // Lock out the transmission mutex
                     _transmissionLockout.WaitOne();
 
@@ -689,9 +704,6 @@ public partial class CSVToSoundPage : ContentPage
 
         // Set the current state to now be stopping
         _currentTransmissionState = MindToSoundEmulator.TransmissionStates.STOPPING;
-
-        // Release the transmission mutex
-        _transmissionLockout.ReleaseMutex();
 
         // Recursively call this method to handle the stopping state
         await HandleTransmission();
@@ -737,9 +749,6 @@ public partial class CSVToSoundPage : ContentPage
             // Update the port number
             _oscPort = Convert.ToInt32(OSCPortNum.Text);
         }
-
-        // Lock out the transmission mutex
-        _transmissionLockout.WaitOne();
 
         // Set the OSC trasmission info
         _emulator?.SetOSCInfo(_oscIP, _oscPort);
@@ -806,6 +815,17 @@ public partial class CSVToSoundPage : ContentPage
                 // Call the handler method
                 await HandleTransmission();
                 break;
+        }
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+
+        // Check if we are transmitting data
+        if (_transmissionThread is not null)
+        {
+            OnTransmissionClicked(new(), new());
         }
     }
 }

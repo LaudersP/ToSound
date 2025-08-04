@@ -37,6 +37,8 @@ namespace ToSound.Pages
         private static Mutex _transmissionMutex = new();
         private static Mutex _statsVariableMutex = new();
         private Thread? _statisticsUpdaterThread = null;
+        private bool _wavesCheckboxesDisabled = false;
+        private bool _sensorCheckboxesDisabled = false;
 
         // Flags
         private bool _isHeadsetConnected = false;
@@ -426,6 +428,9 @@ namespace ToSound.Pages
                     _statisticsUpdaterThread = null;
                 }
 
+                // Update the stats one last time
+                UpdateTransmissionStats();
+
                 // Reset the samplings transmitted variable
                 _numSamplingsTransmitted = 0;
 
@@ -543,28 +548,11 @@ namespace ToSound.Pages
                 // Disable sensor checkboxs
                 ToggleSensorCheckboxs();
 
-                // Assign the band flags to the band flags list
-                _bandFlagsList.Add(_transmitTheta);
-                _bandFlagsList.Add(_transmitAlpha);
-                _bandFlagsList.Add(_transmitBetaL);
-                _bandFlagsList.Add(_transmitBetaH);
-                _bandFlagsList.Add(_transmitGamma);
+                // Get the selected wave frequencies
+                _bandFlagsList = [_transmitTheta, _transmitAlpha, _transmitBetaL, _transmitBetaH, _transmitGamma];
 
-                // Assign the sensor flags to the sensor flags list
-                _sensorFlagsList.Add(_transmitAF3);
-                _sensorFlagsList.Add(_transmitF7);
-                _sensorFlagsList.Add(_transmitF3);
-                _sensorFlagsList.Add(_transmitFC5);
-                _sensorFlagsList.Add(_transmitT7);
-                _sensorFlagsList.Add(_transmitP7);
-                _sensorFlagsList.Add(_transmitO1);
-                _sensorFlagsList.Add(_transmitO2);
-                _sensorFlagsList.Add(_transmitP8);
-                _sensorFlagsList.Add(_transmitT8);
-                _sensorFlagsList.Add(_transmitFC6);
-                _sensorFlagsList.Add(_transmitF4);
-                _sensorFlagsList.Add(_transmitF8);
-                _sensorFlagsList.Add(_transmitAF4);
+                // Get the selected sensors
+                _sensorFlagsList = [_transmitAF3, _transmitF7, _transmitF3, _transmitFC5, _transmitT7, _transmitP7, _transmitO1, _transmitO2, _transmitP8, _transmitT8, _transmitFC6, _transmitF4, _transmitF8, _transmitAF4];
 
                 // Raise the transmitting flag
                 _isTransmittingData = true;
@@ -596,6 +584,9 @@ namespace ToSound.Pages
 
                 // Lower the recording flag
                 _isRecording = false;
+
+                // Update the UI stats for the final number
+                UpdateRecordingStats();
 
                 // Zero the recordings saved variable
                 _statsVariableMutex.WaitOne();
@@ -786,31 +777,72 @@ namespace ToSound.Pages
 
         private void ToggleWaveCheckboxs()
         {
+            _wavesCheckboxesDisabled = !_wavesCheckboxesDisabled;
+
             // Toggle checkboxs
-            ThetaCheckBox.IsEnabled = !ThetaCheckBox.IsEnabled;
-            AlphaCheckBox.IsEnabled = !AlphaCheckBox.IsEnabled;
-            BetaLCheckBox.IsEnabled = !BetaLCheckBox.IsEnabled;
-            BetaHCheckBox.IsEnabled = !BetaHCheckBox.IsEnabled;
-            GammaCheckBox.IsEnabled = !GammaCheckBox.IsEnabled;
+            ThetaCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            AlphaCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            BetaLCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            BetaHCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+            GammaCheckBox.IsEnabled = !_wavesCheckboxesDisabled;
+
+            // Check if they need checking to prevent greyed out checkboxs
+            if (!_wavesCheckboxesDisabled)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    ThetaCheckBox.IsChecked = !ThetaCheckBox.IsChecked;
+                    AlphaCheckBox.IsChecked = !AlphaCheckBox.IsChecked;
+                    BetaLCheckBox.IsChecked = !BetaLCheckBox.IsChecked;
+                    BetaHCheckBox.IsChecked = !BetaHCheckBox.IsChecked;
+                    GammaCheckBox.IsChecked = !GammaCheckBox.IsChecked;
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         private void ToggleSensorCheckboxs()
         {
+            _sensorCheckboxesDisabled = !_sensorCheckboxesDisabled;
+
             // Toggle checkboxs
-            AF3CheckBox.IsEnabled = !AF3CheckBox.IsEnabled;
-            F7CheckBox.IsEnabled = !F7CheckBox.IsEnabled;
-            F3CheckBox.IsEnabled = !F3CheckBox.IsEnabled;
-            FC5CheckBox.IsEnabled = !FC5CheckBox.IsEnabled;
-            T7CheckBox.IsEnabled = !T7CheckBox.IsEnabled;
-            P7CheckBox.IsEnabled = !P7CheckBox.IsEnabled;
-            O1CheckBox.IsEnabled = !O1CheckBox.IsEnabled;
-            O2CheckBox.IsEnabled = !O2CheckBox.IsEnabled;
-            P8CheckBox.IsEnabled = !P8CheckBox.IsEnabled;
-            T8CheckBox.IsEnabled = !T8CheckBox.IsEnabled;
-            FC6CheckBox.IsEnabled = !FC6CheckBox.IsEnabled;
-            F4CheckBox.IsEnabled = !F4CheckBox.IsEnabled;
-            F8CheckBox.IsEnabled = !F8CheckBox.IsEnabled;
-            AF4CheckBox.IsEnabled = !AF4CheckBox.IsEnabled;
+            AF3CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F7CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F3CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            FC5CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            T7CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            P7CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            O1CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            O2CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            P8CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            T8CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            FC6CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F4CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            F8CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+            AF4CheckBox.IsEnabled = !_sensorCheckboxesDisabled;
+
+            // Check if they need checking to prevent greyed out checkboxs
+            if(!_sensorCheckboxesDisabled)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    AF3CheckBox.IsChecked = !AF3CheckBox.IsChecked;
+                    F7CheckBox.IsChecked = !F7CheckBox.IsChecked;
+                    F3CheckBox.IsChecked = !F3CheckBox.IsChecked;
+                    FC5CheckBox.IsChecked = !FC5CheckBox.IsChecked;
+                    T7CheckBox.IsChecked = !T7CheckBox.IsChecked;
+                    P7CheckBox.IsChecked = !P7CheckBox.IsChecked;
+                    O1CheckBox.IsChecked = !O1CheckBox.IsChecked;
+                    O2CheckBox.IsChecked = !O2CheckBox.IsChecked;
+                    P8CheckBox.IsChecked = !P8CheckBox.IsChecked;
+                    T8CheckBox.IsChecked = !T8CheckBox.IsChecked;
+                    FC6CheckBox.IsChecked = !FC6CheckBox.IsChecked;
+                    F4CheckBox.IsChecked = !F4CheckBox.IsChecked;
+                    F8CheckBox.IsChecked = !F8CheckBox.IsChecked;
+                    AF4CheckBox.IsChecked = !AF4CheckBox.IsChecked;
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         private void ToggleOSCEntries()
@@ -839,7 +871,7 @@ namespace ToSound.Pages
 
             // Output data in OSC protocol
             // ... /{frequency}/{sensor} {value}
-            for(int i = 1; i < data.Count; i++)
+            for (int i = 1; i < data.Count; i++)
             {
                 // Determine the band
                 string band = _bands[(i - 1) % 5];
@@ -863,6 +895,14 @@ namespace ToSound.Pages
                     _numSamplingsTransmitted++;
                     Debug.WriteLine($"Sampling Transmitted: {_numSamplingsTransmitted}");
                     _statsVariableMutex.ReleaseMutex();
+                }
+                else
+                {
+                    // Construct the arguments
+                    object[] args = { 0.0f };
+
+                    // Send the OSC message
+                    _osc.SendMessage($"/{band}/{sensor}", args);
                 }
             }
 
@@ -907,10 +947,23 @@ namespace ToSound.Pages
                 _fs.Write(lastVal, 0, lastVal.Length);
             }
 
+            // Get the number of samplings sent
+            uint bandsSelected = 0;
+            foreach (bool band in _bandFlagsList)
+            {
+                if (band) bandsSelected++;
+            }
+            uint sensorsSelected = 0;
+            foreach (bool sensor in _sensorFlagsList)
+            {
+                if (sensor) sensorsSelected++;
+            }
+
             // Update the sampling recorded variable
             _statsVariableMutex.WaitOne();
-            _numSamplingsSaved += Convert.ToUInt16(data.Count - 1);
+            _numSamplingsSaved += bandsSelected * sensorsSelected;
             _statsVariableMutex.ReleaseMutex();
+            Debug.WriteLine($"Samplings Recorded: {_numSamplingsSaved}");
         }
 
         private void ZeroOSCChannels()
@@ -930,21 +983,16 @@ namespace ToSound.Pages
                 // Iterate through the sensors
                 for (int i = 0; i < _sensors.Length; i++)
                 {
-                    // Check if the sensor is in use
-                    if (_sensorFlagsList[i])
+                    // Iterate through the bands
+                    for (int j = 0; j < _bands.Length; j++)
                     {
-                        // Iterate through the bands
-                        for (int j = 0; j < _bands.Length; j++)
-                        {
-                            // Check if the band is in use
-                            if (_bandFlagsList[j])
-                            {
-                                // Zero out the channel
-                                object[] args = { 0.0f };
-                                _osc.SendMessage($"/{_bands[j]}/{_sensors[i]}", args);
-                            }
-                        }
+                            // Zero out the channel
+                            object[] args = { 0.0f };
+                            _osc.SendMessage($"/{_bands[j]}/{_sensors[i]}", args);
                     }
+
+                    // Slight delay to prevent flooding the OSC
+                    Thread.Sleep(1);
                 }
             }
 
@@ -999,18 +1047,47 @@ namespace ToSound.Pages
                 // Calculat ethe elapsed time
                 var elapsedTime = DateTime.Now - _recordingStartTime;
 
+                // Get the number of samplings sent
+                uint bandsSelected = 0;
+                foreach (bool band in _bandFlagsList)
+                {
+                    if (band) bandsSelected++;
+                }
+                uint sensorsSelected = 0;
+                foreach (bool sensor in _sensorFlagsList)
+                {
+                    if (sensor) sensorsSelected++;
+                }
+
                 // Update the UI on the main thread
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     ElapsedRecordTime.Text = elapsedTime.ToString(@"hh\:mm\:ss");
                     _statsVariableMutex.WaitOne();
-                    TotalSamplingsSaved.Text = _numSamplingsSaved.ToString();
+                    TotalSamplingsSaved.Text = (_numSamplingsSaved - (bandsSelected * sensorsSelected)).ToString();
                     _statsVariableMutex.ReleaseMutex();
                 });
             }
             catch
             {
                 // PASS
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            // Check if we are recording data
+            if(_isRecording)
+            {
+                OnRecordClicked(new(), new());
+            }
+
+            // Check if we are transmitting data
+            if(_isTransmittingData)
+            {
+                OnTransmissionClicked(new(), new());
             }
         }
     }
