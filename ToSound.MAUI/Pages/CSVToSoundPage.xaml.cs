@@ -1,5 +1,4 @@
 using CortexAccess;
-using Microsoft.UI.Composition;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
